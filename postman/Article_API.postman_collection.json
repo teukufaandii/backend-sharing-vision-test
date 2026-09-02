@@ -1,0 +1,481 @@
+{
+	"info": {
+		"_postman_id": "b3e945c7-50a1-4327-9c98-1e43e26b1d47",
+		"name": "Article API - Sharing Vision Test",
+		"description": "Postman collection for Sharing Vision Backend Test - Use Case Post Article",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"health"
+					]
+				},
+				"description": "Check API health and runtime status"
+			},
+			"response": []
+		},
+		{
+			"name": "1. Create Article",
+			"item": [
+				{
+					"name": "POST /article/ (Success - Publish)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Panduan Lengkap Arsitektur Microservices Modern 2026\",\n    \"content\": \"Arsitektur microservices memungkinkan pengembangan sistem skala besar menjadi lebih fleksibel, modular, and resilient. Dalam panduan ini, kita akan membahas integrasi clean architecture menggunakan Go, pengelolaan database MySQL relasional, migrasi skema yang aman, implementasi validasi data yang ketat, serta pengujian automated unit dan endpoint handler secara komprehensif.\",\n    \"category\": \"Technology\",\n    \"status\": \"Publish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								""
+							]
+						},
+						"description": "Create a new article with Publish status"
+					},
+					"response": []
+				},
+				{
+					"name": "POST /article/ (Success - Draft)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Draf Artikel Konsep Basis Data Relasional Terdistribusi\",\n    \"content\": \"Basis data relasional terdistribusi menawarkan skalabilitas horizontal dengan tetap mempertahankan jaminan konsistensi ACID. Artikel ini merupakan draf awal yang mengeksplorasi optimasi query, indexing b-tree, transaction isolation levels, connection pooling, dan replikasi multi-region.\",\n    \"category\": \"Database\",\n    \"status\": \"Draft\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								""
+							]
+						},
+						"description": "Create a new article with Draft status"
+					},
+					"response": []
+				},
+				{
+					"name": "POST /article/ (Validation Error - Short Title)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Judul Pendek\",\n    \"content\": \"Arsitektur microservices memungkinkan pengembangan sistem skala besar menjadi lebih fleksibel, modular, and resilient. Dalam panduan ini, kita akan membahas integrasi clean architecture menggunakan Go, pengelolaan database MySQL relasional, migrasi skema yang aman, implementasi validasi data yang ketat, serta pengujian automated unit dan endpoint handler secara komprehensif.\",\n    \"category\": \"Technology\",\n    \"status\": \"Publish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								""
+							]
+						},
+						"description": "Validation test: Title < 20 characters returns 400 Bad Request"
+					},
+					"response": []
+				},
+				{
+					"name": "POST /article/ (Validation Error - Short Content)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Panduan Lengkap Arsitektur Microservices Modern 2026\",\n    \"content\": \"Konten terlalu pendek (kurang dari 200 karakter).\",\n    \"category\": \"Technology\",\n    \"status\": \"Publish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								""
+							]
+						},
+						"description": "Validation test: Content < 200 characters returns 400 Bad Request"
+					},
+					"response": []
+				},
+				{
+					"name": "POST /article/ (Validation Error - Short Category)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Panduan Lengkap Arsitektur Microservices Modern 2026\",\n    \"content\": \"Arsitektur microservices memungkinkan pengembangan sistem skala besar menjadi lebih fleksibel, modular, and resilient. Dalam panduan ini, kita akan membahas integrasi clean architecture menggunakan Go, pengelolaan database MySQL relasional, migrasi skema yang aman, implementasi validasi data yang ketat, serta pengujian automated unit dan endpoint handler secara komprehensif.\",\n    \"category\": \"IT\",\n    \"status\": \"Publish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								""
+							]
+						},
+						"description": "Validation test: Category < 3 characters returns 400 Bad Request"
+					},
+					"response": []
+				},
+				{
+					"name": "POST /article/ (Validation Error - Invalid Status)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Panduan Lengkap Arsitektur Microservices Modern 2026\",\n    \"content\": \"Arsitektur microservices memungkinkan pengembangan sistem skala besar menjadi lebih fleksibel, modular, and resilient. Dalam panduan ini, kita akan membahas integrasi clean architecture menggunakan Go, pengelolaan database MySQL relasional, migrasi skema yang aman, implementasi validasi data yang ketat, serta pengujian automated unit dan endpoint handler secara komprehensif.\",\n    \"category\": \"Technology\",\n    \"status\": \"Archived\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								""
+							]
+						},
+						"description": "Validation test: Status must be one of Publish | Draft | Thrash"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Get Articles (Paging)",
+			"item": [
+				{
+					"name": "GET /article/<limit>/<offset> (10 / 0)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/article/10/0",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"10",
+								"0"
+							]
+						},
+						"description": "Get articles with limit=10 and offset=0"
+					},
+					"response": []
+				},
+				{
+					"name": "GET /article/<limit>/<offset> (5 / 2)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/article/5/2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"5",
+								"2"
+							]
+						},
+						"description": "Get articles with limit=5 and offset=2"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Get Article by ID",
+			"item": [
+				{
+					"name": "GET /article/<id> (Found - 200)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/article/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"1"
+							]
+						},
+						"description": "Get single article by ID (Success 200)"
+					},
+					"response": []
+				},
+				{
+					"name": "GET /article/<id> (Not Found - 404)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/article/9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"9999"
+							]
+						},
+						"description": "Get single article with non-existent ID (Returns 404 Not Found)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Update Article",
+			"item": [
+				{
+					"name": "PUT /article/<id> (Success - 200)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Update: Panduan Lengkap Arsitektur Microservices Modern 2026\",\n    \"content\": \"Pembaruan konten artikel arsitektur microservices dengan penambahan materi observability, distributed tracing, OpenTelemetry, resilience pattern menggunakan circuit breaker, rate limiting, dan zero-downtime database schema migration.\",\n    \"category\": \"Software Engineering\",\n    \"status\": \"Publish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"1"
+							]
+						},
+						"description": "Update existing article by ID using PUT method"
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /article/<id> (Success - 200)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Patch: Panduan Lengkap Arsitektur Microservices Modern 2026\",\n    \"content\": \"Pembaruan konten artikel arsitektur microservices dengan penambahan materi observability, distributed tracing, OpenTelemetry, resilience pattern menggunakan circuit breaker, rate limiting, dan zero-downtime database schema migration.\",\n    \"category\": \"Software Engineering\",\n    \"status\": \"Publish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"1"
+							]
+						},
+						"description": "Update existing article by ID using PATCH method"
+					},
+					"response": []
+				},
+				{
+					"name": "POST /article/<id> (Success Update via POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Post Update: Panduan Lengkap Arsitektur Microservices Modern 2026\",\n    \"content\": \"Pembaruan konten artikel arsitektur microservices dengan penambahan materi observability, distributed tracing, OpenTelemetry, resilience pattern menggunakan circuit breaker, rate limiting, dan zero-downtime database schema migration.\",\n    \"category\": \"Software Engineering\",\n    \"status\": \"Draft\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"1"
+							]
+						},
+						"description": "Update existing article by ID using POST method"
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /article/<id> (Not Found - 404)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Update Judul Artikel Yang Cukup Panjang Lebih 20 Karakter\",\n    \"content\": \"Konten artikel pembaruan yang panjangnya melebihi 200 karakter untuk memastikan lolos dari seluruh aturan validasi input pada backend sebelum mengecek keberadaan data di database MySQL.\",\n    \"category\": \"Software Engineering\",\n    \"status\": \"Publish\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/article/9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"9999"
+							]
+						},
+						"description": "Update non-existent article (Returns 404 Not Found)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Delete Article",
+			"item": [
+				{
+					"name": "DELETE /article/<id> (Success - 200)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/article/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"1"
+							]
+						},
+						"description": "Delete article by ID using DELETE method"
+					},
+					"response": []
+				},
+				{
+					"name": "POST /article/<id>?action=delete (Delete via POST)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/article/1?action=delete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"1"
+							],
+							"query": [
+								{
+									"key": "action",
+									"value": "delete"
+								}
+							]
+						},
+						"description": "Delete article by ID using POST method with action=delete query parameter"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /article/<id> (Not Found - 404)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/article/9999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"article",
+								"9999"
+							]
+						},
+						"description": "Delete non-existent article (Returns 404 Not Found)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
