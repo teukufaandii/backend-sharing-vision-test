@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"golang.org/x/time/rate"
 
-	"golang-skeleton/pkg/utils"
+	"backend-sharing-vision-test/pkg/utils"
 )
 
 // IPRateLimiter stores rate limiters per IP

@@ -1,39 +1,23 @@
 package routes
 
 import (
-	handler "golang-skeleton/internal/handler/http"
-	"golang-skeleton/internal/middleware"
+	handler "backend-sharing-vision-test/internal/handler/http"
+	"backend-sharing-vision-test/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
-func SetupRouter(
-	authHandler *handler.AuthHandler,
-	jwtSecret string,
-) *gin.Engine {
-	r := gin.Default()
+// SetupRouter initializes and configures the Gin router and middlewares
+func SetupRouter(allowedOrigins []string) *gin.Engine {
+	r := gin.New()
 
-	r.Use(middleware.CORSMiddleware([]string{"*"}))
+	r.Use(middleware.CORSMiddleware(allowedOrigins))
 	r.Use(middleware.LoggerMiddleware(logrus.New()))
 	r.Use(middleware.RecoveryMiddleware(logrus.New()))
-	r.Use(middleware.RateLimitMiddleware(20, 10))
 
+	// Health check endpoint
 	r.GET("/health", handler.HealthCheck)
-
-	v1 := r.Group("/api/v1")
-	{
-		auth := v1.Group("/auth")
-		{
-			auth.POST("/register", authHandler.Register)
-
-			authProtected := auth.Group("")
-			authProtected.Use(middleware.AuthMiddleware(jwtSecret))
-			{
-				// protected route
-			}
-		}
-	}
 
 	return r
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"golang-skeleton/pkg/utils"
+	"backend-sharing-vision-test/pkg/utils"
 )
 
 // RecoveryMiddleware recovers from panics and logs the error

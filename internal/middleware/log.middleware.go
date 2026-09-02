@@ -59,11 +59,6 @@ func LoggerMiddleware(logger *logrus.Logger) gin.HandlerFunc {
             "latency":    latency.String(),
         })
 
-        // Add user ID if authenticated
-        if userID, exists := c.Get(UserIDKey); exists {
-            entry = entry.WithField("user_id", userID)
-        }
-
         // Log based on status code
         switch {
         case statusCode >= 500:

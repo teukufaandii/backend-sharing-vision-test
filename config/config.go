@@ -16,14 +16,6 @@ type Config struct {
 	DatabaseMaxConn int
 	DatabaseMaxIdle int
 
-	RedisURL      string
-	RedisPassword string
-	RedisDB       int
-
-	JWTSecret        string
-	JWTAccessExpiry  time.Duration
-	JWTRefreshExpiry time.Duration
-
 	RateLimitRPS   int
 	RateLimitBurst int
 }
@@ -32,22 +24,14 @@ func Load() *Config {
 	return &Config{
 		ServerPort:     getEnv("PORT", "8080"),
 		Environment:    getEnv("ENVIRONMENT", "development"),
-		AllowedOrigins: getEnvSlice("ALLOWED_ORIGINS", []string{"http://localhost:3000"}),
+		AllowedOrigins: getEnvSlice("ALLOWED_ORIGINS", []string{"*"}),
 
-		DatabaseURL:     getEnv("DATABASE_URL", "postgres://postgres:postgres@db:5432/golang_skeleton?sslmode=disable"),
+		DatabaseURL:     getDatabaseURL(),
 		DatabaseMaxConn: getEnvInt("DATABASE_MAX_CONN", 25),
 		DatabaseMaxIdle: getEnvInt("DATABASE_MAX_IDLE", 5),
 
-		RedisURL:      getEnv("REDIS_URL", "localhost:6379"),
-		RedisPassword: getEnv("REDIS_PASSWORD", ""),
-		RedisDB:       getEnvInt("REDIS_DB", 0),
-
-		JWTSecret:        getEnv("JWT_SECRET", "secret"),
-		JWTAccessExpiry:  getEnvDuration("JWT_ACCESS_EXPIRY", 15*time.Minute),
-		JWTRefreshExpiry: getEnvDuration("JWT_REFRESH_EXPIRY", 24*time.Hour),
-
-		RateLimitRPS:   getEnvInt("RATE_LIMIT_RPS", 10),
-		RateLimitBurst: getEnvInt("RATE_LIMIT_BURST", 100),
+		RateLimitRPS:   getEnvInt("RATE_LIMIT_RPS", 20),
+		RateLimitBurst: getEnvInt("RATE_LIMIT_BURST", 50),
 	}
 }
 
@@ -89,4 +73,17 @@ func getEnvSlice(key string, defaultValue []string) []string {
 		return strings.Split(value, ",")
 	}
 	return defaultValue
+}
+
+func getDatabaseURL() string {
+	if url := os.Getenv("DATABASE_URL"); url != "" {
+		return url
+	}
+	user := getEnv("DB_USER", "root")
+	pass := getEnv("DB_PASSWORD", "password")
+	host := getEnv("DB_HOST", "localhost")
+	port := getEnv("DB_PORT", "3306")
+	name := getEnv("DB_NAME", "article")
+
+	return user + ":" + pass + "@tcp(" + host + ":" + port + ")/" + name + "?charset=utf8mb4&parseTime=True&loc=Local"
 }

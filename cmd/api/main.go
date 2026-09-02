@@ -1,62 +1,40 @@
 package main
 
 import (
-	"golang-skeleton/config"
-	handler "golang-skeleton/internal/handler/http"
-	"golang-skeleton/internal/repository"
-	"golang-skeleton/internal/routes"
-	services "golang-skeleton/internal/service"
-	database "golang-skeleton/pkg/database/postgre"
-	redis "golang-skeleton/pkg/database/redis"
 	"log"
 	"os"
+
+	"backend-sharing-vision-test/config"
+	"backend-sharing-vision-test/internal/routes"
+	dbMysql "backend-sharing-vision-test/pkg/database/mysql"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, using environment variables")
+		log.Println("No .env file found, using system environment variables")
 	}
 
-	// config init
 	cfg := config.Load()
 
-	db, err := database.NewPostgreConn(cfg.DatabaseURL)
+	// Initialize MySQL database connection
+	db, err := dbMysql.NewMySQLConn(cfg.DatabaseURL, cfg.DatabaseMaxConn, cfg.DatabaseMaxIdle)
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		log.Printf("Warning: Failed to connect to database: %v", err)
+	} else {
+		// Auto-migrate schema on start
+		if err := dbMysql.AutoMigrate(db); err != nil {
+			log.Printf("Warning: Auto-migration failed: %v", err)
+		}
 	}
 
-	database.AutoMigrate(db)
-	database.SeedDatabase(db)
-	database.CreateIndexes(db)
-
-	// redis connection init
-	redisClient, err := redis.NewRedisConn(cfg.RedisURL, cfg.RedisPassword, cfg.RedisDB)
-	if err != nil {
-		log.Fatalf("Failed to connect to Redis: %v", err)
-	}
-	defer redisClient.Close()
-
-	// repo connection
-	userRepo := repository.NewUserRepository(db)
-	redisRepo := repository.NewRedisRepository(redisClient)
-
-	// service connection
-	authService := services.NewAuthService(*userRepo, redisRepo, cfg)
-
-	// handler connection
-	authHandler := handler.NewAuthHandler(authService)
-
-	// routing
-	router := routes.SetupRouter(
-		authHandler,
-		cfg.JWTSecret,
-	)
+	// Setup HTTP router
+	router := routes.SetupRouter(cfg.AllowedOrigins)
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = cfg.ServerPort
 	}
 
 	log.Printf("Server starting on port %s", port)
